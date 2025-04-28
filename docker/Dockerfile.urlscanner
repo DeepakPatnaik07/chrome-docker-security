@@ -1,0 +1,9 @@
+FROM mcr.microsoft.com/playwright/python:v1.40.0-jammy
+
+WORKDIR /app
+
+# Copy your analysis script into the container
+COPY analyze_url.py .
+
+# All dependencies are pre-installed in the base image
+CMD ["python", "analyze_url.py", "http://example.com"]

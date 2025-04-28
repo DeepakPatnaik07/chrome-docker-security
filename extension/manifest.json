@@ -1,0 +1,22 @@
+{
+    "manifest_version": 3,
+    "name": "Safe Link Scanner",
+    "version": "1.0",
+    "description": "Scan links in a Docker-isolated environment before opening them.",
+    "permissions": [
+      "contextMenus",
+      "tabs",
+      "scripting",
+      "storage",
+      "windows"
+    ],
+    "host_permissions": [
+      "<all_urls>"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "action": {
+      "default_popup": "popup.html"
+    }
+  }
