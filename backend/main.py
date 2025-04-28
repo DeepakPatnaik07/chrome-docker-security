@@ -118,29 +118,51 @@ async def analyze_link(link: Link):
             start_index = logs.find(start_marker)
             end_index = logs.find(end_marker)
             if start_index != -1 and end_index != -1:
-                json_string = logs[start_index + len(start_marker) : end_index].strip()
+                json_string = logs[
+                    start_index + len(start_marker) : end_index
+                ].strip()
                 if json_string:
                     local_analysis_result = json.loads(json_string)
                 else:
-                     local_analysis_result = {"status": "error", "error": "Empty JSON string found in logs", "details_raw": logs}
+                    local_analysis_result = {
+                        "status": "error",
+                        "error": "Empty JSON string found in logs",
+                        "details_raw": logs,
+                    }
             else:
-                 local_analysis_result = {"status": "error", "error": "Could not find JSON delimiters in logs", "details_raw": logs}
+                local_analysis_result = {
+                    "status": "error",
+                    "error": "Could not find JSON delimiters in logs",
+                    "details_raw": logs,
+                }
         except Exception as e:
-            local_analysis_result = {"status": "error", "error": f"Failed to process container logs: {e}", "details_raw": logs}
+            local_analysis_result = {
+                "status": "error",
+                "error": f"Failed to process container logs: {e}",
+                "details_raw": logs,
+            }
 
     except Exception as e:
-        local_analysis_result = {"status": "error", "error": f"Docker execution failed: {e}", "details_raw": None}
-    # --- End Docker Analysis --- 
+        local_analysis_result = {
+            "status": "error",
+            "error": f"Docker execution failed: {e}",
+            "details_raw": None,
+        }
+    # --- End Docker Analysis ---
 
     # --- Step 2: Run AI Analysis (if local analysis didn't fail badly) ---
     ai_analysis_result = {}
-    if local_analysis_result.get("status") != "error" or local_analysis_result.get("url"): # Proceed if we have a URL
+    # Proceed if we have a URL or didn't get a fatal error status
+    if local_analysis_result.get("status") != "error" or local_analysis_result.get("url"):
         ai_analysis_result = await analyze_with_gemini(local_analysis_result)
     else:
-        ai_analysis_result = {"ai_skipped": True, "ai_reason": "Local analysis failed before AI step."}
+        ai_analysis_result = {
+            "ai_skipped": True,
+            "ai_reason": "Local analysis failed before AI step.",
+        }
     # --- End AI Analysis ---
 
-    # --- Step 3: Merge Results --- 
+    # --- Step 3: Merge Results ---
     # Ensure 'analysis' key exists
     if "analysis" not in local_analysis_result:
         local_analysis_result["analysis"] = {}
