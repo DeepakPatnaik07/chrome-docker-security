@@ -147,7 +147,7 @@ async def analyze_link(link: Link):
             start_index = logs.find(start_marker)
             end_index = logs.find(end_marker)
             if start_index != -1 and end_index != -1:
-                json_string = logs[start_index + len(start_marker) : end_index].strip()
+                json_string = logs[start_index + len(start_marker): end_index].strip()
                 if json_string:
                     local_analysis_result = json.loads(json_string)
                 else:
