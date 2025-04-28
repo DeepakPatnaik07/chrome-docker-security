@@ -21,7 +21,7 @@ jobs:
         pip install -r requirements.txt
 
     - name: Lint backend code
-      run: | # Ignore line length errors (E501)
+      run: | # Ignore line length (E501) and line break before operator (W503)
         cd backend
         pip install flake8
-        flake8 --ignore=E501 .
+        flake8 --ignore=E501,W503 .
